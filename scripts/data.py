@@ -3,6 +3,17 @@
 # This is one of the many reasons why python 3 is better than python 2
 # Run this script with python2 and then with python3
 
+################ Sobre los datos
+# Tipos de Causas
+# Solicitud Jurisdiccional
+# Carpeta Judicial
+# Incidente
+# Cooperacion Judicial
+#
+# 230 Usuarios
+# 7255 Causas
+
+
 import sys
 import re
 import functools
