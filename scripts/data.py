@@ -108,8 +108,8 @@ def fix_null(doc):
 def parse_linea(headers, linea):
     return {t[0]: t[1] for t in zip(headers, linea.split(','))}
 
-def get_documents(file, processing):
-    with open(file, "r") as f:
+def get_documents(filename, processing):
+    with open(filename, "r") as f:
         data = f.read().replace('\r\n','\n').replace('\r','\n')
         return map(processing, data.splitlines())
 
@@ -118,6 +118,15 @@ def show_some_data(iterable, max):
         print(data)
         if i > max:
             break
+
+def format_data(value):
+    return value and "%s" % value or ""
+
+def dump_csv_data(filename, headers, data):
+    with open(filename, "w") as f:
+        f.writelines([",".join(headers)])
+        f.writelines([
+            ",".join([format_data(d[key]) for key in headers ])  for d in data ])
 
 def main(args=sys.argv):
     now = time.time()
@@ -132,6 +141,9 @@ def main(args=sys.argv):
         functools.partial(parse_linea, CAUSAS)
     ))
     print("Causas", time.time() - now)
+    headers = CAUSAS[:]
+    headers.remove("opciones")
+    dump_csv_data("causas.csv", headers, causas)
     #show_some_data(auditorias, 10)
     #show_some_data(causas, 10)
     return 0    
