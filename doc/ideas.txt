@@ -1,0 +1,13 @@
+1 -------------------------------------
+Se observan todas las habilitaciones otrogadas de un usuario en fabor de otro
+donde cada arco es una causa.
+El nodo Trelew representa a la Oficina Judicial otrogando permisos a los 
+usuarios profesionales.
+Primera aproximacion al diagrama
+El archivo pesa 1726037 1,6Mb
+Problemas con la velocidad, no hay orden, ni se observa a donde pertenecen los 
+usuarios.
+[{"name": "28482369", "habilitaciones": ["14221391", ..., "14221391"]}, ... 
+{"name": "26259265", "habilitaciones": ["14221391", ..., "14221391" ]}
+2 -------------------------------------
+Los arcos a este nivel no aportan informacion, estan todos superpuestos.

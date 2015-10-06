@@ -1,0 +1,7 @@
+{
+  "name": "SerconexPenal.Viz",
+  "source_folders": [
+    "."
+  ],
+  "licence": "Apache License 2.0"
+}
