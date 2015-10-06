@@ -37,7 +37,7 @@ AUDITORIAS = [
 
 CAUSAS = [ 
     "habilitado", "causa_id", "tipo", "desde", "hasta", "habilitante",
-    "opciones"
+    "roles"
 ]
 
 # Roles
@@ -146,6 +146,11 @@ def save_mongo(roles):
     for k, r in roles.items():
         db.Habilitaciones.update({ "habilitante": k }, { "$set": { "roles": er }})
 
+def save_mongo_habilitaciones(habilitaciones):
+    client = pymongo.MongoClient()
+    db=client["SerconexPenal"]
+    db.Habilitaciones.insert_many(habilitaciones)
+
 def main(args=sys.argv):
     now = time.time()
     auditorias = get_documents("../data/auditoria.csv", compose(
@@ -155,19 +160,20 @@ def main(args=sys.argv):
     print("Auditorias", time.time() - now)
     now = time.time()
     causas = get_documents("../data/causas.csv", compose(
-        map_opciones, fix_null, fix_datetime, fix_numero,
+        map_roles, fix_null, fix_datetime, fix_numero,
         functools.partial(parse_linea, CAUSAS)
     ))
     print("Causas", time.time() - now)
-    headers = CAUSAS[:]
-    headers.remove("opciones")
+    #headers = CAUSAS[:]
+    #headers.remove("opciones")
     #dump_csv_data("causas.csv", headers, causas)
-    roles = {}
-    for a in auditorias:
-        roles.setdefault(a["documento"], a["roles"])
-    save_mongo(roles)
+    #roles = {}
+    #for a in auditorias:
+    #    roles.setdefault(a["documento"], a["roles"])
+    #save_mongo(roles)
     #show_some_data(auditorias, 10)
     #show_some_data(causas, 10)
+    save_mongo_habilitaciones(list(causas))
     return 0    
 
 if __name__ == '__main__':
