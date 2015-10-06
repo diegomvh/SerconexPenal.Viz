@@ -18,6 +18,7 @@ import sys
 import re
 import functools
 import time
+import pymongo
 from datetime import datetime
 
 def compose(*functions):
@@ -139,6 +140,12 @@ def dump_csv_data(filename, headers, data):
         f.writelines([
             ",".join([format_data(d[key]) for key in headers ])  for d in data ])
 
+def save_mongo(roles):
+    client = pymongo.MongoClient()
+    db=client["SerconexPenal"]
+    for k, r in roles.items():
+        db.Habilitaciones.update({ "habilitante": k }, { "$set": { "roles": er }})
+
 def main(args=sys.argv):
     now = time.time()
     auditorias = get_documents("../data/auditoria.csv", compose(
@@ -154,7 +161,11 @@ def main(args=sys.argv):
     print("Causas", time.time() - now)
     headers = CAUSAS[:]
     headers.remove("opciones")
-    dump_csv_data("causas.csv", headers, causas)
+    #dump_csv_data("causas.csv", headers, causas)
+    roles = {}
+    for a in auditorias:
+        roles.setdefault(a["documento"], a["roles"])
+    save_mongo(roles)
     #show_some_data(auditorias, 10)
     #show_some_data(causas, 10)
     return 0    

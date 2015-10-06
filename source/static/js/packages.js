@@ -1,16 +1,56 @@
 (function() {
+    var tree = [
+        { name: "root", 
+          children: [
+              { name: "usuario", children: [
+                  { name: "fiscal", children: [
+                    { name: "profesional", children: []},
+                    { name: "delegado", children: []},
+                    { name: "administrador", children: []},      
+                  ]},
+                  { name: "defensa", children: [
+                    { name: "profesional", children: []},
+                    { name: "delegado", children: []},
+                    { name: "administrador", children: []},      
+                  ]},
+                  { name: "profesional", children: []},
+                  { name: "delegado", children: []},
+                  { name: "administrador", children: []},
+               ]},
+              { name: "oficina", children: []},
+        ]}
+    ];
   packages = {
 
     // Lazily construct the package hierarchy from class names.
     root: function(classes) {
-      var root = {name: "", children: [], parent:null}
       var map = {};
-      
+      var order = ["usuario", "oficina", "fiscal", "defensa", "profesional", "delegado", "administrador"]
+
+      function find_parent(node, r) {
+          if (r.length == 0)
+              return node;
+          node = node.children.filter(function(ch) ch.name == r[0]);
+          return find_parent(node[0], Array.slice(r, 1));
+      }
+
+      function build_tree(name, children, parent) {
+         var node = { name: name, children:[], parent: parent }
+         if (parent)
+             parent.children.push(node);
+         map[name] = node;
+         children.forEach(function(ch) {
+             build_tree(ch.name, ch.children, node);
+         });
+      }
+      build_tree("root", tree[0].children, null);
       function find(name, data) {
-        data.parent = root;
         data.key = name;
         map[name] = data;
-        root.children.push(map[name]);
+        var r = order.filter(function(r) { return data.roles.indexOf(r) != -1 });
+        var parent = find_parent(map["root"], r);
+        data.parent = parent;
+        parent.children.push(map[name]);
         return data;
       }
 
@@ -18,7 +58,7 @@
         find(d.name, d);
       });
 
-      return root;
+      return map["root"];
     },
 
     // Return a list of imports for the given array of nodes.

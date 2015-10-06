@@ -14,10 +14,16 @@ def index():
 @app.route("/habilitaciones.json")
 def habilitaciones():
     habilitaciones = {}
+    roles = { "Oficina Judicial de Trelew": ["oficina"] }
     for habilita in mongo.db.Habilitaciones.find():
         habilitaciones.setdefault(habilita["habilitante"], []).append(habilita["habilitado"])
         habilitaciones.setdefault(habilita["habilitado"], [])
-    result = [ {"name": key.split()[-1], "habilitaciones": list(set(value)) } for key, value in habilitaciones.items() ]
+        roles.setdefault(habilita["habilitante"], habilita.get("roles", []))
+    result = [ {
+        "name": key.split()[-1], 
+        "habilitaciones": list(set(value)),
+        "roles": roles.get(key, [])
+        } for key, value in habilitaciones.items() ]
     return json.dumps(result)
 
 if __name__ == "__main__":
