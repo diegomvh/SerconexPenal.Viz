@@ -1046,7 +1046,7 @@ define(['d3'], function(d3) {
   
     // Recursively compute the node depth and value.
     // Also converts the data representation into a standard hierarchy structure.
-    function recurse(data, depth, nodes) {
+    var recurse = function(data, depth, nodes) {
       var childs = children.call(hierarchy, data, depth),
           node = d3_layout_hierarchyInline ? data : {data: data};
       node.depth = depth;
@@ -1072,7 +1072,7 @@ define(['d3'], function(d3) {
     }
   
     // Recursively re-evaluates the node value.
-    function revalue(node, depth) {
+    var revalue = function(node, depth) {
       var children = node.children,
           v = 0;
       if (children && (n = children.length)) {
@@ -1087,7 +1087,7 @@ define(['d3'], function(d3) {
       return v;
     }
   
-    function hierarchy(d) {
+    var hierarchy = function(d) {
       var nodes = [];
       recurse(d, 0, nodes);
       return nodes;
@@ -1132,7 +1132,6 @@ define(['d3'], function(d3) {
       d3_layout_hierarchyInline = true;
       return (object.nodes = object)(d);
     };
-  
     return object;
   }
   
@@ -1368,7 +1367,7 @@ define(['d3'], function(d3) {
         separation = d3_layout_treeSeparation,
         size = [1, 1]; // width, height
   
-    function cluster(d, i) {
+    var cluster = function(d, i) {
       var nodes = hierarchy.call(this, d, i),
           root = nodes[0],
           previousNode,
@@ -1415,7 +1414,6 @@ define(['d3'], function(d3) {
       size = x;
       return cluster;
     };
-  
     return d3_layout_hierarchyRebind(cluster, hierarchy);
   };
   
@@ -1894,4 +1892,5 @@ define(['d3'], function(d3) {
     if (dy < 0) { y += dy / 2; dy = 0; }
     return {x: x, y: y, dx: dx, dy: dy};
   }
+  return d3;
 });

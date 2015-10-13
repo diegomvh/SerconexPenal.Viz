@@ -1,5 +1,4 @@
-define(function(require, exports, module) {
-  var _ = require('underscore');
+define(['underscore'], function(_) {
   var tree = [
       { name: "root", 
         children: [
@@ -23,7 +22,7 @@ define(function(require, exports, module) {
   ];
 
   // Lazily construct the package hierarchy from class names.
-  exports.root = function(classes) {
+  var root = function(classes) {
         var map = {};
         var order = ["usuario", "oficina", "fiscal", "defensa", "profesional", "delegado", "administrador"]
   
@@ -62,7 +61,7 @@ define(function(require, exports, module) {
     };
   
       // Return a list of imports for the given array of nodes.
-    exports.imports = function(nodes) {
+    var imports = function(nodes) {
         var map={}, imports = [];
   
         // Compute a map from name to node.
@@ -80,4 +79,5 @@ define(function(require, exports, module) {
   
         return imports;
     };
+  return {"root": root, "imports": imports}
 });
