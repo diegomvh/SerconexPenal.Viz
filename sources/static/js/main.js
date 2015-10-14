@@ -1,5 +1,5 @@
-define(['jquery', 'underscore', 'd3.layout', 'packages'],
-  function($, _, d3, pkg) {
+define(['jquery', 'underscore', 'd3', 'layouts/chord', 'packages'],
+  function($, _, d3, chord, pkg) {
     var w = 1280,
         h = 800,
         rx = w / 2,
@@ -9,15 +9,17 @@ define(['jquery', 'underscore', 'd3.layout', 'packages'],
     
     var splines = [];
     
-    var cluster = d3.layout.cluster()
+    var cluster = chord.cluster()
         .size([360, ry - 120]);
-    var bundle = d3.layout.bundle();
+        
+    var bundle = chord.bundle();
+    
     var line = d3.svg.line.radial()
         .interpolate("bundle")
         .tension(.85)
         .radius(function(d) { return d.y; })
         .angle(function(d) { return d.x / 180 * Math.PI; });
-    // Chrome 15 bug: <http://code.google.com/p/chromium/issues/detail?id=98951>
+        
     var div = d3.select("body").insert("div", "h2")
         .style("top", "-50px")
         .style("left", "-160px")
@@ -25,6 +27,7 @@ define(['jquery', 'underscore', 'd3.layout', 'packages'],
         .style("height", w + "px")
         .style("position", "absolute")
         .style("-webkit-backface-visibility", "hidden");
+        
     var svg = div.append("svg:svg")
         .attr("width", w)
         .attr("height", w)
@@ -34,6 +37,7 @@ define(['jquery', 'underscore', 'd3.layout', 'packages'],
         .attr("class", "arc")
         .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
         .on("mousedown", mousedown);
+    
     d3.json("habilitaciones.json", function(classes) {
       var nodes = cluster.nodes(pkg.root(classes)),
           links = pkg.imports(nodes),

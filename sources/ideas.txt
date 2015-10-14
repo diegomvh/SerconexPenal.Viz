@@ -32,3 +32,5 @@ oficina
 Ahora estan agrupados y detecte un error, si bien no estan diferenciados por color
 se detecta que hay sub grupos separados del resto, esto es un error en los datos del sistema
 Con la estrucutra planteada deberian exisitr 
+
+https://seeingcomplexity.wordpress.com/2011/02/05/hierarchical-edge-bundles/

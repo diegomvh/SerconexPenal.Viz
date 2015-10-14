@@ -1,10 +1,10 @@
 define(['d3'], function(d3) {
-  d3.layout = {};
+  var layout = {};
   // Implements hierarchical edge bundling using Holten's algorithm. For each
   // input link, a path is computed that travels through the tree, up the parent
   // hierarchy to the least common ancestor, and then back down to the destination
   // node. Each path is simply an array of nodes.
-  d3.layout.bundle = function() {
+  layout.bundle = function() {
     return function(links) {
       var paths = [],
           i = -1,
@@ -57,7 +57,7 @@ define(['d3'], function(d3) {
     }
     return sharedNode;
   }
-  d3.layout.chord = function() {
+  layout.chord = function() {
     var chord = {},
         chords,
         groups,
@@ -211,7 +211,7 @@ define(['d3'], function(d3) {
     return chord;
   };
   // A rudimentary force layout using Gauss-Seidel.
-  d3.layout.force = function() {
+  layout.force = function() {
     var force = {},
         event = d3.dispatch("tick"),
         size = [1, 1],
@@ -557,8 +557,8 @@ define(['d3'], function(d3) {
   function d3_layout_forceLinkStrength(link) {
     return 1;
   }
-  d3.layout.partition = function() {
-    var hierarchy = d3.layout.hierarchy(),
+  layout.partition = function() {
+    var hierarchy = layout.hierarchy(),
         size = [1, 1]; // width, height
   
     function position(node, x, dx, dy) {
@@ -605,7 +605,7 @@ define(['d3'], function(d3) {
   
     return d3_layout_hierarchyRebind(partition, hierarchy);
   };
-  d3.layout.pie = function() {
+  layout.pie = function() {
     var value = Number,
         sort = d3_layout_pieSortByValue,
         startAngle = 0,
@@ -701,7 +701,7 @@ define(['d3'], function(d3) {
   
   var d3_layout_pieSortByValue = {};
   // data is two-dimensional array of x,y; we populate y0
-  d3.layout.stack = function() {
+  layout.stack = function() {
     var values = Object,
         order = d3_layout_stackOrders["default"],
         offset = d3_layout_stackOffsets["zero"],
@@ -937,7 +937,7 @@ define(['d3'], function(d3) {
   function d3_layout_stackSum(p, d) {
     return p + d[1];
   }
-  d3.layout.histogram = function() {
+  layout.histogram = function() {
     var frequency = true,
         valuer = Number,
         ranger = d3_layout_histogramRange,
@@ -1039,7 +1039,7 @@ define(['d3'], function(d3) {
   function d3_layout_histogramRange(values) {
     return [d3.min(values), d3.max(values)];
   }
-  d3.layout.hierarchy = function() {
+  layout.hierarchy = function() {
     var sort = d3_layout_hierarchySort,
         children = d3_layout_hierarchyChildren,
         value = d3_layout_hierarchyValue;
@@ -1158,8 +1158,8 @@ define(['d3'], function(d3) {
   
   // For backwards-compatibility, don't enable inlining by default.
   var d3_layout_hierarchyInline = false;
-  d3.layout.pack = function() {
-    var hierarchy = d3.layout.hierarchy().sort(d3_layout_packSort),
+  layout.pack = function() {
+    var hierarchy = layout.hierarchy().sort(d3_layout_packSort),
         size = [1, 1];
   
     function pack(d, i) {
@@ -1362,8 +1362,8 @@ define(['d3'], function(d3) {
     }
   }
   // Implements a hierarchical layout using the cluster (or dendogram) algorithm.
-  d3.layout.cluster = function() {
-    var hierarchy = d3.layout.hierarchy().sort(null).value(null),
+  layout.cluster = function() {
+    var hierarchy = layout.hierarchy().sort(null).value(null),
         separation = d3_layout_treeSeparation,
         size = [1, 1]; // width, height
   
@@ -1439,8 +1439,8 @@ define(['d3'], function(d3) {
     return children && (n = children.length) ? d3_layout_clusterRight(children[n - 1]) : node;
   }
   // Node-link tree diagram using the Reingold-Tilford "tidy" algorithm
-  d3.layout.tree = function() {
-    var hierarchy = d3.layout.hierarchy().sort(null).value(null),
+  layout.tree = function() {
+    var hierarchy = layout.hierarchy().sort(null).value(null),
         separation = d3_layout_treeSeparation,
         size = [1, 1]; // width, height
   
@@ -1677,8 +1677,8 @@ define(['d3'], function(d3) {
   }
   // Squarified Treemaps by Mark Bruls, Kees Huizing, and Jarke J. van Wijk
   // Modified to support a target aspect ratio by Jeff Heer
-  d3.layout.treemap = function() {
-    var hierarchy = d3.layout.hierarchy(),
+  layout.treemap = function() {
+    var hierarchy = layout.hierarchy(),
         round = Math.round,
         size = [1, 1], // width, height
         padding = null,
@@ -1892,5 +1892,5 @@ define(['d3'], function(d3) {
     if (dy < 0) { y += dy / 2; dy = 0; }
     return {x: x, y: y, dx: dx, dy: dy};
   }
-  return d3;
+  return layout;
 });
