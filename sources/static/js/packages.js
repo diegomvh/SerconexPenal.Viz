@@ -1,25 +1,9 @@
-define(['underscore'], function(_) {
-  var tree = [
-      { name: "root", 
-        children: [
-            { name: "usuario", children: [
-                { name: "fiscal", children: [
-                  { name: "profesional", children: []},
-                  { name: "delegado", children: []},
-                  { name: "administrador", children: []},      
-                ]},
-                { name: "defensa", children: [
-                  { name: "profesional", children: []},
-                  { name: "delegado", children: []},
-                  { name: "administrador", children: []},      
-                ]},
-                { name: "profesional", children: []},
-                { name: "delegado", children: []},
-                { name: "administrador", children: []},
-             ]},
-            { name: "oficina", children: []},
-      ]}
-  ];
+define(['jquery', 'underscore'], function($, _) {
+  var tree;
+  
+  $.getJSON( "tree.json", function( json ) { 
+    tree = [ json ];
+  });
 
   // Lazily construct the package hierarchy from class names.
   var root = function(classes) {
