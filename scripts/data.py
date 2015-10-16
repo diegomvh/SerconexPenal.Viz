@@ -36,8 +36,7 @@ AUDITORIAS = [
 ]
 
 CAUSAS = [ 
-    "habilitado", "causa_id", "tipo", "desde", "hasta", "habilitante",
-    "roles"
+    "habilitante", "habilitado", "causa", "tipo", "localidad", "desde", "hasta", "roles"
 ]
 
 # Roles
