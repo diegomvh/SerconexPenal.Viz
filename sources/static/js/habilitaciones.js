@@ -5,6 +5,8 @@ define(['jquery', 'underscore', 'd3', 'layouts/chord', 'packages'],
         rx = w / 2,
         ry = h / 2,
         m0,
+        div,
+        svg,
         rotate = 0;
     
     var splines = [];
@@ -19,57 +21,56 @@ define(['jquery', 'underscore', 'd3', 'layouts/chord', 'packages'],
         .tension(.85)
         .radius(function(d) { return d.y; })
         .angle(function(d) { return d.x / 180 * Math.PI; });
-        
-    var div = d3.select("body").insert("div", "h2")
-        .style("top", "-50px")
-        .style("left", "-160px")
+    
+    function draw(element, url) {
+      div = d3.select(element)
         .style("width", w + "px")
         .style("height", w + "px")
-        .style("position", "absolute")
         .style("-webkit-backface-visibility", "hidden");
         
-    var svg = div.append("svg:svg")
+      svg = div.append("svg:svg")
         .attr("width", w)
         .attr("height", w)
       .append("svg:g")
         .attr("transform", "translate(" + rx + "," + ry + ")");
-    svg.append("svg:path")
-        .attr("class", "arc")
-        .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
-        .on("mousedown", mousedown);
-    
-    d3.json("habilitaciones.json", function(classes) {
-      var nodes = cluster.nodes(pkg.root(classes)),
-          links = pkg.imports(nodes),
-          splines = bundle(links);
-    
-      var path = svg.selectAll("path.link")
-          .data(links)
-        .enter().append("svg:path")
-          .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
-          .attr("d", function(d, i) { return line(splines[i]); });
-    
-      svg.selectAll("g.node")
-          .data(nodes.filter(function(n) { return !n.children; }))
-        .enter().append("svg:g")
-          .attr("class", "node")
-          .attr("id", function(d) { return "node-" + d.key; })
-          .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-        .append("svg:text")
-          .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
-          .attr("dy", ".31em")
-          .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-          .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
-          .text(function(d) { return d.key; })
-          .on("mouseover", mouseover)
-          .on("mouseout", mouseout);
-    
-      d3.select("input[type=range]").on("change", function() {
-        line.tension(this.value / 100);
-        path.attr("d", function(d, i) { return line(splines[i]); });
+
+      svg.append("svg:path")
+          .attr("class", "arc")
+          .attr("d", d3.svg.arc().outerRadius(ry - 120).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+          .on("mousedown", mousedown);
+      
+      d3.json(url, function(classes) {
+        var nodes = cluster.nodes(pkg.root(classes)),
+            links = pkg.imports(nodes),
+            splines = bundle(links);
+      
+        var path = svg.selectAll("path.link")
+            .data(links)
+          .enter().append("svg:path")
+            .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+            .attr("d", function(d, i) { return line(splines[i]); });
+      
+        svg.selectAll("g.node")
+            .data(nodes.filter(function(n) { return !n.children; }))
+          .enter().append("svg:g")
+            .attr("class", "node")
+            .attr("id", function(d) { return "node-" + d.key; })
+            .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+          .append("svg:text")
+            .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+            .attr("dy", ".31em")
+            .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+            .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+            .text(function(d) { return d.key; })
+            .on("mouseover", mouseover)
+            .on("mouseout", mouseout);
+      
+        d3.select("input[type=range]").on("change", function() {
+          line.tension(this.value / 100);
+          path.attr("d", function(d, i) { return line(splines[i]); });
+        });
       });
-    });
-    
+    }
     d3.select(window)
         .on("mousemove", mousemove)
         .on("mouseup", mouseup);
@@ -147,4 +148,7 @@ define(['jquery', 'underscore', 'd3', 'layouts/chord', 'packages'],
       return a[0] * b[0] + a[1] * b[1];
     }
 
+    return {
+      draw: draw
+    };    
 })
